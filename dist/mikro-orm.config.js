@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("./constants");
 const Post_1 = require("./entities/Post");
+const User_1 = require("./entities/User");
 const migrations_1 = require("@mikro-orm/migrations");
 const path_1 = __importDefault(require("path"));
-const User_1 = require("./entities/User");
 console.log(__dirname);
 exports.default = {
     migrations: {

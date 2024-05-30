@@ -1,9 +1,9 @@
 import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
+import { User } from "./entities/User";
 import { MikroORM } from "@mikro-orm/core";
 import  {Migrator} from '@mikro-orm/migrations';
 import path from 'path';
-import { User } from "./entities/User";
 console.log(__dirname);
 export default  {
     migrations:{

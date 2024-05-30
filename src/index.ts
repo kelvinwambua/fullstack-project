@@ -11,14 +11,14 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import {cors} from "cors"; 
+import cors from "cors"; 
 
 const main = async () => {
   const orm = await MikroORM.init(mikroConfig);
   await orm.getMigrator().up();
   const app = express();
-  
-  // Redis client configuration
+  app.set('trust proxy', 1);
+
   let redisClient = createClient({ url: "redis://127.0.0.1:6379" });
   redisClient.on("connect", () => console.log("Redis Client Connected"));
   redisClient.on("error", (err) => console.error("Redis Client Error:", err));
@@ -29,37 +29,41 @@ const main = async () => {
 
   app.use(
     session({
-      name: "Tcy",
+      name: "mtume",
       store: new RedisStore({
         client: redisClient,
         prefix: "myapp:",
+        disableTouch: true,
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
         sameSite: "lax",
-        secure: __prod__,
+        secure: false,
       },
       saveUninitialized: false,
-      secret: "your_strong_secret_here", // Replace with a secure secret
+      secret: "KelvinisKelvin", // Replace with a secure secret
       resave: false,
     })
   );
 
   const apolloServer = new ApolloServer({
+    introspection: __prod__ ? false : true,
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
-    cors: {
-      origin: "https://studio.apollographql.com/sandbox/explorer", 
-      credentials: true, 
-    },
   });
 
   await apolloServer.start();
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app,     
+    cors: {
+      origin: 'https://studio.apollographql.com',
+      credentials: true, 
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"]
+  }});
 
   app.listen(4000, () => {
     console.log("Server started on localhost:4000");
