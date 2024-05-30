@@ -45,17 +45,17 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             disableTouch: true,
         }),
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+            expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365 * 10)),
+            maxAge: (1000 * 60 * 60 * 24 * 365 * 10),
             httpOnly: true,
-            sameSite: "lax",
-            secure: false,
+            sameSite: "none",
+            secure: constants_1.__prod__,
         },
         saveUninitialized: false,
         secret: "KelvinisKelvin",
         resave: false,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
-        introspection: constants_1.__prod__ ? false : true,
         schema: yield (0, type_graphql_1.buildSchema)({
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
@@ -65,10 +65,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield apolloServer.start();
     apolloServer.applyMiddleware({ app,
         cors: {
-            origin: 'https://studio.apollographql.com',
+            origin: ['https://studio.apollographql.com', 'http://localhost:4000', 'http://localhost:4000/graphql'],
             credentials: true,
             methods: ['GET', 'POST', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"]
+            allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"],
         } });
     app.listen(4000, () => {
         console.log("Server started on localhost:4000");

@@ -11,7 +11,7 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import cors from "cors"; 
+
 
 const main = async () => {
   const orm = await MikroORM.init(mikroConfig);
@@ -36,10 +36,11 @@ const main = async () => {
         disableTouch: true,
       }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+        expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365 * 10)),
+        maxAge: (1000 * 60 * 60 * 24 * 365 * 10),
         httpOnly: true,
-        sameSite: "lax",
-        secure: false,
+        sameSite: "none",
+        secure: __prod__,
       },
       saveUninitialized: false,
       secret: "KelvinisKelvin", // Replace with a secure secret
@@ -48,7 +49,6 @@ const main = async () => {
   );
 
   const apolloServer = new ApolloServer({
-    introspection: __prod__ ? false : true,
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
@@ -59,10 +59,10 @@ const main = async () => {
   await apolloServer.start();
   apolloServer.applyMiddleware({ app,     
     cors: {
-      origin: 'https://studio.apollographql.com',
+      origin: ['https://studio.apollographql.com', 'http://localhost:4000', 'http://localhost:4000/graphql' ],
       credentials: true, 
       methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"]
+      allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"],
   }});
 
   app.listen(4000, () => {
