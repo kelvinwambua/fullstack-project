@@ -14,7 +14,7 @@ export default  {
     entities:[Post, User],
     dbName: 'postgres',
     user: 'postgres',
-    password: 'King_kelvin1',
+    password: 'postgres',
     debug: !__prod__,
     driver: require('@mikro-orm/postgresql').PostgreSqlDriver,
     extensions: [Migrator],
