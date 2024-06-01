@@ -25,6 +25,7 @@ const type_graphql_1 = require("type-graphql");
 const hello_1 = require("./resolvers/hello");
 const post_1 = require("./resolvers/post");
 const user_1 = require("./resolvers/user");
+const cors_1 = __importDefault(require("cors"));
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const orm = yield core_1.MikroORM.init(mikro_orm_config_1.default);
     yield orm.getMigrator().up();
@@ -37,7 +38,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         console.error("Failed to connect to Redis:", err);
         process.exit(1);
     });
-    app.use((0, express_session_1.default)({
+    app.use((0, cors_1.default)({
+        origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+        credentials: true,
+    }), (0, express_session_1.default)({
         name: "mtume",
         store: new connect_redis_1.default({
             client: redisClient,
@@ -63,13 +67,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
     });
     yield apolloServer.start();
-    apolloServer.applyMiddleware({ app,
-        cors: {
-            origin: ['https://studio.apollographql.com', 'http://localhost:4000', 'http://localhost:4000/graphql'],
-            credentials: true,
-            methods: ['GET', 'POST', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"],
-        } });
+    apolloServer.applyMiddleware({ app, cors: false });
     app.listen(4000, () => {
         console.log("Server started on localhost:4000");
     });

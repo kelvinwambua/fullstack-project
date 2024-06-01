@@ -11,6 +11,7 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
+import cors from "cors"; // Import the cors package
 
 
 const main = async () => {
@@ -28,6 +29,10 @@ const main = async () => {
   });
 
   app.use(
+    cors({
+      origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+      credentials: true,
+    }),
     session({
       name: "mtume",
       store: new RedisStore({
@@ -57,13 +62,7 @@ const main = async () => {
   });
 
   await apolloServer.start();
-  apolloServer.applyMiddleware({ app,     
-    cors: {
-      origin: ['https://studio.apollographql.com', 'http://localhost:4000', 'http://localhost:4000/graphql' ],
-      credentials: true, 
-      methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', "x-forward-proto"],
-  }});
+  apolloServer.applyMiddleware({app, cors: false});
 
   app.listen(4000, () => {
     console.log("Server started on localhost:4000");
