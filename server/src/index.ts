@@ -44,7 +44,7 @@ const main = async () => {
         expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365 * 10)),
         maxAge: (1000 * 60 * 60 * 24 * 365 * 10),
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "lax",
         secure: __prod__,
       },
       saveUninitialized: false,
@@ -58,7 +58,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
+    context: ({ req, res }) => ({ em: orm.em.fork(), req, res: {...res, cookie: res.cookie} }),
   });
 
   await apolloServer.start();
@@ -72,3 +72,4 @@ const main = async () => {
 main().catch((err) => {
   console.error("Error starting server:", err);
 });
+

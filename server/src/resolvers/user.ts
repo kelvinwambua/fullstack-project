@@ -2,6 +2,7 @@ import { Resolver, Ctx, Arg, Mutation, Field, InputType, ObjectType, Query } fro
 import { User } from "../entities/User";
 import { MyContext } from "../types";
 import argon2 from "argon2";
+import { EntityManager } from "@mikro-orm/postgresql";
 
 @InputType()
 class UsernamePasswordInput {
@@ -50,7 +51,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async register(
     @Arg('options') options: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     if (options.username.length <= 2) {
       return { 
@@ -63,30 +64,28 @@ export class UserResolver {
       };
     }
 
-    const existingUser = await em.findOne(User, { username: options.username });
-    if (existingUser) {
-      return {
-        errors: [{ field: "username", message: "username already taken" }],
-      };
-    }
-
     const hashedPassword = await argon2.hash(options.password);
-    const user = em.create(User, {
-      username: options.username,
-      password: hashedPassword,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    let user;
 
     try {
-      await em.persistAndFlush(user);
+      const result = await (em as EntityManager).createQueryBuilder(User).getKnexQuery().insert({
+        username: options.username,
+        password : hashedPassword,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
+      ).returning("*");
+      user = result[0];
+
     } catch (err) {
-      console.error("Error registering user:", err);
-      return {
-        errors: [{ field: "unknown", message: "An unexpected error occurred" }]
-      };
+      if (err.code === '23505' || err.detail.includes("already exists")) {
+        return {
+          errors: [{ field: "username", message: "username already taken" }],
+        };
+      }
     }
-    return { user, errors: [] }; 
+    req.session.userId = user.id;
+    return { user}; 
   }
 
   @Mutation(() => UserResponse)

@@ -52,7 +52,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 365 * 10)),
             maxAge: (1000 * 60 * 60 * 24 * 365 * 10),
             httpOnly: true,
-            sameSite: "none",
+            sameSite: "lax",
             secure: constants_1.__prod__,
         },
         saveUninitialized: false,
@@ -64,7 +64,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
         }),
-        context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
+        context: ({ req, res }) => ({ em: orm.em.fork(), req, res: Object.assign(Object.assign({}, res), { cookie: res.cookie }) }),
     });
     yield apolloServer.start();
     apolloServer.applyMiddleware({ app, cors: false });
