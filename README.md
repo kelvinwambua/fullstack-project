@@ -11,9 +11,11 @@
 ## How to run this app
 
 <h1> Inititalize the Project</h1>
+
 ```
 yarn
 ```
+
 ```
 npm init
 ```
