@@ -8,24 +8,24 @@ import { toErrrorMap } from "../toErrorMap";
 import { useRouter } from "next/router";
 import { error } from "console";
 import { Options } from "csv-parser";
-import {useRegisterMutation } from "../generated/graphql";
+import {useLoginMutation } from "../generated/graphql";
 
 
     
-const Register: React.FC<registerProps> = ({}) => {
+const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
-  const [, register] = useRegisterMutation();
+  const [, login] = useLoginMutation();
   return (
     <Wrapper variant="small">
     <Formik initialValues={{username: "",password:""}}
     onSubmit={ async (values,{setErrors})=> {
         console.log(values)
-        const response = await register({options: values});
+        const response = await login({options: values});
         console.log(response)
-        if (response.data?.register.errors){
-          setErrors(toErrrorMap(response.data.register.errors))
-          console.log(response.data.register.errors)
-        }else if (response.data?.register.user) {
+        if (response.data?.login.errors){
+          setErrors(toErrrorMap(response.data.login.errors))
+          console.log(response.data.login.errors)
+        }else if (response.data?.login.user) {
           console.log("Pushing to home page");
             router.push("/");
         }
@@ -44,4 +44,4 @@ const Register: React.FC<registerProps> = ({}) => {
   );
 };
 
-export default Register;
+export default Login;

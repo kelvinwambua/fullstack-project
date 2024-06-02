@@ -98,16 +98,58 @@ export type UsernamePasswordInput = {
   username: Scalars['String']['input'];
 };
 
-export type Unnamed_1_MutationVariables = Exact<{
+export type LoginMutationVariables = Exact<{
   options: UsernamePasswordInput;
 }>;
 
 
-export type Unnamed_1_Mutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, username: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, username: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export const Document = gql`
-    mutation ($options: UsernamePasswordInput!) {
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string } | null };
+
+export type RegisterMutationVariables = Exact<{
+  options: UsernamePasswordInput;
+}>;
+
+
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, username: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+
+export const LoginDocument = gql`
+    mutation login($options: UsernamePasswordInput!) {
+  login(options: $options) {
+    user {
+      id
+      username
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    username
+  }
+}
+    `;
+
+export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
+  return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
+};
+export const RegisterDocument = gql`
+    mutation register($options: UsernamePasswordInput!) {
   register(options: $options) {
     user {
       id
@@ -121,6 +163,6 @@ export const Document = gql`
 }
     `;
 
-export function useMutation() {
-  return Urql.useMutation<Mutation, Unnamed_1_MutationVariables>(Document);
+export function useRegisterMutation() {
+  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
