@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 import Wrapper from "../components/Wrapper";
 import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input } from "@chakra-ui/react";
 import { InputField } from "../components/inputField";
-import { toErrrorMap } from "../toErrorMap";
+import { toErrrorMap } from "../utils/toErrorMap"
 import { useRouter } from "next/router";
 import { error } from "console";
 import { Options } from "csv-parser";
