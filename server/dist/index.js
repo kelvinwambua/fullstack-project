@@ -42,7 +42,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         origin: ["http://localhost:3000", "https://studio.apollographql.com"],
         credentials: true,
     }), (0, express_session_1.default)({
-        name: "mtume",
+        name: constants_1.COOKIE_NAME,
         store: new connect_redis_1.default({
             client: redisClient,
             prefix: "myapp:",
@@ -64,7 +64,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
         }),
-        context: ({ req, res }) => ({ em: orm.em.fork(), req, res: Object.assign(Object.assign({}, res), { cookie: res.cookie }) }),
+        context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
     });
     yield apolloServer.start();
     apolloServer.applyMiddleware({ app, cors: false });

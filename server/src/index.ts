@@ -1,5 +1,5 @@
 import { MikroORM } from "@mikro-orm/core";
-import { __prod__ } from "./constants";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import "reflect-metadata";
 import mikroConfig from "./mikro-orm.config";
 import express from "express";
@@ -34,7 +34,7 @@ const main = async () => {
       credentials: true,
     }),
     session({
-      name: "mtume",
+      name: COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
         prefix: "myapp:",
@@ -58,7 +58,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em.fork(), req, res: {...res, cookie: res.cookie} }),
+    context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
   });
 
   await apolloServer.start();
