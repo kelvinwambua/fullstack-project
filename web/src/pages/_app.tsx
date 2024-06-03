@@ -1,16 +1,15 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "../theme";
 import { AppProps } from "next/app";
-
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/createUrqlClient";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-   
-      <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
-    
+    <ChakraProvider theme={theme}>
+      <Component {...pageProps}/>
+    </ChakraProvider>
   );
 }
 
-export default MyApp;
+export default withUrqlClient(createUrqlClient, { ssr: true })(MyApp);

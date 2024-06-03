@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
     "start2": "ts-node src/index.ts",
@@ -20,6 +19,7 @@
     "@types/express-session": "^1.18.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.12",
+    "@types/nodemailer": "^6.4.15",
     "@types/redis": "^4.0.11",
     "express-session": "^1.18.0",
     "nodemon": "^3.1.0",
@@ -42,6 +42,7 @@
     "graphql": "^16.8.1",
     "graphql-scalars": "^1.23.0",
     "latest": "^0.2.0",
+    "nodemailer": "^6.9.13",
     "pg": "^8.11.5",
     "type-graphql": "^2.0.0-rc.1"
   },

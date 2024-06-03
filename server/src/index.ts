@@ -14,6 +14,7 @@ import { UserResolver } from "./resolvers/user";
 import cors from "cors"; // Import the cors package
 
 
+
 const main = async () => {
   const orm = await MikroORM.init(mikroConfig);
   await orm.getMigrator().up();
@@ -72,4 +73,3 @@ const main = async () => {
 main().catch((err) => {
   console.error("Error starting server:", err);
 });
-

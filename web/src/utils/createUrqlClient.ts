@@ -5,7 +5,7 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 export const createUrqlClient = (ssrExchange: any) => ({
     url: "http://localhost:4000/graphql",
-  exchanges: [debugExchange, fetchExchange, cacheExchange({
+  exchanges: [debugExchange, fetchExchange, ssrExchange, cacheExchange({
     updates: {
       Mutation: {
         logout: (_result, _args, cache, _info) => {

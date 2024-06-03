@@ -1,3 +1,4 @@
+
 mutation register ($options: UsernamePasswordInput!) {
   register(options: $options) {
     user {
