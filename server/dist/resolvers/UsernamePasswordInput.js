@@ -17,11 +17,11 @@ exports.UsernamePasswordInput = UsernamePasswordInput;
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
-], UsernamePasswordInput.prototype, "username", void 0);
+], UsernamePasswordInput.prototype, "email", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
-], UsernamePasswordInput.prototype, "email", void 0);
+], UsernamePasswordInput.prototype, "username", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)

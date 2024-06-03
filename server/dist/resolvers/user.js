@@ -58,15 +58,18 @@ UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], UserResponse);
 let UserResolver = class UserResolver {
+    forgotPassword(email_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (email, { em }) {
+            return true;
+        });
+    }
     me(_a) {
         return __awaiter(this, arguments, void 0, function* ({ req, em }) {
             if (!req.session.userId) {
                 return null;
             }
-            else {
-                const user = yield em.findOne(User_1.User, { id: req.session.userId });
-                return user;
-            }
+            const user = yield em.findOne(User_1.User, { id: req.session.userId });
+            return user;
         });
     }
     register(options_1, _a) {
@@ -78,20 +81,28 @@ let UserResolver = class UserResolver {
             const hashedPassword = yield argon2_1.default.hash(options.password);
             let user;
             try {
-                const result = yield em.createQueryBuilder(User_1.User).getKnexQuery().insert({
+                const result = yield em
+                    .createQueryBuilder(User_1.User)
+                    .getKnexQuery()
+                    .insert({
                     username: options.username,
-                    password: hashedPassword,
                     email: options.email,
+                    password: hashedPassword,
                     created_at: new Date(),
                     updated_at: new Date(),
-                }).returning("*");
+                })
+                    .returning("*");
                 user = result[0];
-                console.log("User object before return:", user);
             }
             catch (err) {
-                if (err.code === '23505') {
+                if (err.code === "23505") {
                     return {
-                        errors: [{ field: "username", message: "username already taken" }],
+                        errors: [
+                            {
+                                field: "username",
+                                message: "username already taken",
+                            },
+                        ],
                     };
                 }
             }
@@ -101,35 +112,57 @@ let UserResolver = class UserResolver {
     }
     login(usernameOrEmail_1, password_1, _a) {
         return __awaiter(this, arguments, void 0, function* (usernameOrEmail, password, { em, req }) {
-            const user = yield em.findOne(User_1.User, usernameOrEmail.includes("@") ? { email: usernameOrEmail } : { username: usernameOrEmail });
+            const user = yield em.findOne(User_1.User, usernameOrEmail.includes("@")
+                ? { email: usernameOrEmail }
+                : { username: usernameOrEmail });
             if (!user) {
                 return {
-                    errors: [{ field: 'username', message: 'that username does not exist' }]
+                    errors: [
+                        {
+                            field: "usernameOrEmail",
+                            message: "that username doesn't exist",
+                        },
+                    ],
                 };
             }
             const valid = yield argon2_1.default.verify(user.password, password);
             if (!valid) {
                 return {
-                    errors: [{ field: "password", message: "incorrect password" }],
+                    errors: [
+                        {
+                            field: "password",
+                            message: "incorrect password",
+                        },
+                    ],
                 };
             }
             req.session.userId = user.id;
-            return { user };
+            return {
+                user,
+            };
         });
     }
     logout({ req, res }) {
         return new Promise((resolve) => req.session.destroy((err) => {
+            res.clearCookie(constants_1.COOKIE_NAME);
             if (err) {
                 console.log(err);
                 resolve(false);
                 return;
             }
-            res.clearCookie(constants_1.COOKIE_NAME);
             resolve(true);
         }));
     }
 };
 exports.UserResolver = UserResolver;
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    __param(0, (0, type_graphql_1.Arg)("email")),
+    __param(1, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "forgotPassword", null);
 __decorate([
     (0, type_graphql_1.Query)(() => User_1.User, { nullable: true }),
     __param(0, (0, type_graphql_1.Ctx)()),
@@ -139,7 +172,7 @@ __decorate([
 ], UserResolver.prototype, "me", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => UserResponse),
-    __param(0, (0, type_graphql_1.Arg)('options')),
+    __param(0, (0, type_graphql_1.Arg)("options")),
     __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [UsernamePasswordInput_1.UsernamePasswordInput, Object]),
@@ -147,8 +180,8 @@ __decorate([
 ], UserResolver.prototype, "register", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => UserResponse),
-    __param(0, (0, type_graphql_1.Arg)('usernameOrEmail')),
-    __param(1, (0, type_graphql_1.Arg)('password')),
+    __param(0, (0, type_graphql_1.Arg)("usernameOrEmail")),
+    __param(1, (0, type_graphql_1.Arg)("password")),
     __param(2, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, Object]),
