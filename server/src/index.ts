@@ -4,7 +4,6 @@ import "reflect-metadata";
 import mikroConfig from "./mikro-orm.config";
 import express from "express";
 import session from "express-session";
-import { createClient } from "redis";
 import RedisStore from "connect-redis";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -12,7 +11,10 @@ import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import cors from "cors"; // Import the cors package
-
+import Redis from "ioredis";
+let redis = new Redis({ host: "localhost", port: 6379});
+redis.on("connect", () => console.log("Redis Client Connected"));
+redis.on("error", (err) => console.error("Redis Client Error:", err));
 
 
 const main = async () => {
@@ -21,13 +23,7 @@ const main = async () => {
   const app = express();
   app.set('trust proxy', 1);
 
-  let redisClient = createClient({ url: "redis://127.0.0.1:6379" });
-  redisClient.on("connect", () => console.log("Redis Client Connected"));
-  redisClient.on("error", (err) => console.error("Redis Client Error:", err));
-  await redisClient.connect().catch((err) => {
-    console.error("Failed to connect to Redis:", err);
-    process.exit(1);
-  });
+
 
   app.use(
     cors({
@@ -37,7 +33,7 @@ const main = async () => {
     session({
       name: COOKIE_NAME,
       store: new RedisStore({
-        client: redisClient,
+        client: redis,
         prefix: "myapp:",
         disableTouch: true,
       }),
@@ -59,7 +55,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em.fork(), req, res }),
+    context: ({ req, res }) => ({ em: orm.em.fork(), req, res, redis }),
   });
 
   await apolloServer.start();
