@@ -14,6 +14,7 @@ import { EntityManager } from "@mikro-orm/postgresql";
 import { COOKIE_NAME } from "../constants";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
+import { sendEmail } from "src/utils/sendEmail";
 
 @ObjectType()
 class FieldError {
@@ -36,7 +37,13 @@ class UserResponse {
 export class UserResolver {
   @Mutation(() => Boolean)
   async forgotPassword(@Arg("email") email: string, @Ctx() { em }: MyContext) {
-    // const user = await em.findOne(User, { email });
+    const user = await em.findOne(User, { email })
+    if(!user){
+      return true;
+    };
+    const token = "123123123";
+
+    await sendEmail(email,   ` <a href="http://localhost:3000/change-password/${token}">reset password</a>`)
     return true;
   }
 

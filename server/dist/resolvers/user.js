@@ -31,6 +31,7 @@ const argon2_1 = __importDefault(require("argon2"));
 const constants_1 = require("../constants");
 const UsernamePasswordInput_1 = require("./UsernamePasswordInput");
 const validateRegister_1 = require("../utils/validateRegister");
+const sendEmail_1 = require("src/utils/sendEmail");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -60,6 +61,13 @@ UserResponse = __decorate([
 let UserResolver = class UserResolver {
     forgotPassword(email_1, _a) {
         return __awaiter(this, arguments, void 0, function* (email, { em }) {
+            const user = yield em.findOne(User_1.User, { email });
+            if (!user) {
+                return true;
+            }
+            ;
+            const token = "123123123";
+            yield (0, sendEmail_1.sendEmail)(email, ` <a href="http://localhost:3000/change-password/${token}">reset password</a>`);
             return true;
         });
     }
