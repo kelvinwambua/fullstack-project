@@ -15,7 +15,7 @@ import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
-import { getConnection } from "typeorm";
+import { AppDataSource } from "../index";
 
 @ObjectType()
 class FieldError {
@@ -67,7 +67,7 @@ export class UserResolver {
     }
 
     const userIdNum = parseInt(userId);
-    const user = await User.findOne(userIdNum);
+    const user = await User.findOneBy({id:userIdNum});
 
     if (!user) {
       return {
@@ -88,8 +88,6 @@ export class UserResolver {
     );
 
     await redis.del(key);
-
-    // log in user after change password
     req.session.userId = user.id;
 
     return { user };
@@ -100,7 +98,7 @@ export class UserResolver {
     @Arg("email") email: string,
     @Ctx() { redis }: MyContext
   ) {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOneBy( {email:email});
     if (!user) {
       // the email is not in the db
       return true;
@@ -146,8 +144,8 @@ export class UserResolver {
     const hashedPassword = await argon2.hash(options.password);
     let user;
     try {
-      // User.create({}).save()
-      const result = await getConnection()
+
+      const result = await AppDataSource
         .createQueryBuilder()
         .insert()
         .into(User)
@@ -158,10 +156,13 @@ export class UserResolver {
         })
         .returning("*")
         .execute();
+        console.log(result);
+        
       user = result.raw[0];
     } catch (err) {
       //|| err.detail.includes("already exists")) {
       // duplicate username error
+      console.log("Error while registering user:", err); 
       if (err.code === "23505") {
         return {
           errors: [
@@ -172,6 +173,7 @@ export class UserResolver {
           ],
         };
       }
+    
     }
 
     // store user id session

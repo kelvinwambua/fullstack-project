@@ -31,7 +31,7 @@ let PostResolver = class PostResolver {
         });
     }
     post(id) {
-        return Post_1.Post.findOne(id);
+        return Post_1.Post.findOneBy({ id });
     }
     createPost(title) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -40,7 +40,7 @@ let PostResolver = class PostResolver {
     }
     updatePost(id, title) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield Post_1.Post.findOne(id);
+            const post = yield Post_1.Post.findOneBy({ id });
             if (!post) {
                 return null;
             }

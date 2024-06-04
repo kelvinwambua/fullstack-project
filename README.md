@@ -28,7 +28,7 @@ cd web
 yarn dev
 ```
 
-<h2>Start Up the server<h2>
+<h2>Start Up the server</h2>
 
 ```
 cd server

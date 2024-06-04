@@ -33,7 +33,7 @@ const UsernamePasswordInput_1 = require("./UsernamePasswordInput");
 const validateRegister_1 = require("../utils/validateRegister");
 const sendEmail_1 = require("../utils/sendEmail");
 const uuid_1 = require("uuid");
-const typeorm_1 = require("typeorm");
+const index_1 = require("../index");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -86,7 +86,7 @@ let UserResolver = class UserResolver {
                 };
             }
             const userIdNum = parseInt(userId);
-            const user = yield User_1.User.findOne(userIdNum);
+            const user = yield User_1.User.findOneBy({ id: userIdNum });
             if (!user) {
                 return {
                     errors: [
@@ -107,7 +107,7 @@ let UserResolver = class UserResolver {
     }
     forgotPassword(email_1, _a) {
         return __awaiter(this, arguments, void 0, function* (email, { redis }) {
-            const user = yield User_1.User.findOne({ where: { email } });
+            const user = yield User_1.User.findOneBy({ email: email });
             if (!user) {
                 return true;
             }
@@ -132,7 +132,7 @@ let UserResolver = class UserResolver {
             const hashedPassword = yield argon2_1.default.hash(options.password);
             let user;
             try {
-                const result = yield (0, typeorm_1.getConnection)()
+                const result = yield index_1.AppDataSource
                     .createQueryBuilder()
                     .insert()
                     .into(User_1.User)
@@ -143,9 +143,11 @@ let UserResolver = class UserResolver {
                 })
                     .returning("*")
                     .execute();
+                console.log(result);
                 user = result.raw[0];
             }
             catch (err) {
+                console.log("Error while registering user:", err);
                 if (err.code === "23505") {
                     return {
                         errors: [

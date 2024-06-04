@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
+require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const constants_1 = require("./constants");
-require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
@@ -44,8 +44,8 @@ const AppDataSource = new typeorm_1.DataSource({
     migrations: [],
 });
 exports.AppDataSource = AppDataSource;
+AppDataSource.initialize();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield AppDataSource.initialize();
     const app = (0, express_1.default)();
     app.set('trust proxy', 1);
     app.use((0, cors_1.default)({

@@ -1,6 +1,7 @@
+import "reflect-metadata";
 import {DataSource} from 'typeorm'
 import { COOKIE_NAME, __prod__ } from "./constants";
-import "reflect-metadata";
+
 import express from "express";
 import session from "express-session";
 import RedisStore from "connect-redis";
@@ -31,12 +32,12 @@ const AppDataSource = new DataSource({
     migrations: [],
 
 })
+AppDataSource.initialize()
 
 const main = async () => {
  
   
 
-  await AppDataSource.initialize();
  
 
   
