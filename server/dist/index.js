@@ -44,8 +44,8 @@ const AppDataSource = new typeorm_1.DataSource({
     migrations: [],
 });
 exports.AppDataSource = AppDataSource;
-AppDataSource.initialize();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield AppDataSource.initialize();
     const app = (0, express_1.default)();
     app.set('trust proxy', 1);
     app.use((0, cors_1.default)({

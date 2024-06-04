@@ -32,9 +32,14 @@ const AppDataSource = new DataSource({
     migrations: [],
 
 })
-AppDataSource.initialize()
+
+
+
 
 const main = async () => {
+   await AppDataSource.initialize();
+
+  
  
   
 
