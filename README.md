@@ -25,17 +25,13 @@ npm init
 
 ```
 cd web
-```
-
-```
 yarn dev
 ```
 
-```
-cd server
-```
+<h2>Start Up the server<h2>
 
 ```
+cd server
 yarn watch
 ```
 ```

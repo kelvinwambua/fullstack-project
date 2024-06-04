@@ -1,27 +1,51 @@
-import { MikroORM } from "@mikro-orm/core";
+import {DataSource} from 'typeorm'
 import { COOKIE_NAME, __prod__ } from "./constants";
 import "reflect-metadata";
-import mikroConfig from "./mikro-orm.config";
 import express from "express";
 import session from "express-session";
 import RedisStore from "connect-redis";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import cors from "cors"; // Import the cors package
 import Redis from "ioredis";
+import { User } from './entities/User';
+import { Post } from './entities/Post';
+
 let redis = new Redis({ host: "localhost", port: 6379});
 redis.on("connect", () => console.log("Redis Client Connected"));
 redis.on("error", (err) => console.error("Redis Client Error:", err));
 
+const AppDataSource = new DataSource({
+  type: "postgres",
+  host: "localhost",
+  port: 5432,
+  username: "postgres",
+  password: "King_kelvin1",
+  database: "postgres2",
+  synchronize: true,
+  entities: [Post, User],
+  logging: true,
+      subscribers: [],
+    migrations: [],
+
+})
 
 const main = async () => {
-  const orm = await MikroORM.init(mikroConfig);
-  await orm.getMigrator().up();
+ 
+  
+
+  await AppDataSource.initialize();
+ 
+
+  
+
+
+  
   const app = express();
   app.set('trust proxy', 1);
+
 
 
 
@@ -52,10 +76,10 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver, UserResolver],
+      resolvers: [ PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em.fork(), req, res, redis }),
+    context: ({ req, res }) => ({  req, res, redis }),
   });
 
   await apolloServer.start();
@@ -65,6 +89,7 @@ const main = async () => {
     console.log("Server started on localhost:4000");
   });
 };
+export {AppDataSource};
 
 main().catch((err) => {
   console.error("Error starting server:", err);
