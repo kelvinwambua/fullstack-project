@@ -8,6 +8,7 @@ import { toErrrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import NextLink from "next/link";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -41,6 +42,9 @@ const Login: React.FC<{}> = ({}) => {
                 type="password"
               />
             </Box>
+            <NextLink href="/forgot-password">
+              <Box href="/forgot-password">forgot password?</Box>
+            </NextLink>
             <Button
               mt={4}
               type="submit"
