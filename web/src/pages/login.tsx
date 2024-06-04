@@ -43,7 +43,7 @@ const Login: React.FC<{}> = ({}) => {
               />
             </Box>
             <NextLink href="/forgot-password">
-              <Box href="/forgot-password">forgot password?</Box>
+              <Box>forgot password?</Box>
             </NextLink>
             <Button
               mt={4}
