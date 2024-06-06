@@ -1,7 +1,7 @@
 import { Resolver, Query, Arg, Mutation, InputType, Field, Ctx, UseMiddleware } from "type-graphql";
 import { Post } from "../entities/Post";
 import { MyContext } from "src/types";
-import { isAuth } from "src/middleware/isAuth";
+import { isAuth } from "../middleware/isAuth";
 
 @InputType()
 class PostInput {

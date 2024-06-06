@@ -123,7 +123,7 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: MyContext) {
-    // you are not logged in
+
     if (!req.session.userId) {
       return null;
     }
@@ -160,8 +160,6 @@ export class UserResolver {
         
       user = result.raw[0];
     } catch (err) {
-      //|| err.detail.includes("already exists")) {
-      // duplicate username error
       console.log("Error while registering user:", err); 
       if (err.code === "23505") {
         return {
@@ -176,9 +174,7 @@ export class UserResolver {
     
     }
 
-    // store user id session
-    // this will set a cookie on the user
-    // keep them logged in
+
     req.session.userId = user.id;
 
     return { user };
