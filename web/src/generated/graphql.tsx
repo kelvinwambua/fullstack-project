@@ -43,7 +43,7 @@ export type MutationChangePasswordArgs = {
 
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String']['input'];
+  input: PostInput;
 };
 
 
@@ -76,14 +76,21 @@ export type MutationUpdatePostArgs = {
 export type Post = {
   __typename?: 'Post';
   createdAt: Scalars['String']['output'];
+  creatorId: Scalars['Float']['output'];
   id: Scalars['Float']['output'];
+  points: Scalars['Float']['output'];
+  text: Scalars['String']['output'];
   title: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
+export type PostInput = {
+  text: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String']['output'];
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: Array<Post>;
@@ -157,7 +164,7 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: nu
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: number, title: string, createdAt: string, updatedAt: string }> };
+export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: number, title: string, text: string, createdAt: string, updatedAt: string }> };
 
 export type RegisterMutationVariables = Exact<{
   options: UsernamePasswordInput;
@@ -245,6 +252,7 @@ export const PostsDocument = gql`
   posts {
     id
     title
+    text
     createdAt
     updatedAt
   }
