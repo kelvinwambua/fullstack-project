@@ -12,7 +12,7 @@ import { createUrqlClient } from "../../utils/createUrqlClient";
 import NextLink from "next/link";
 
 interface ChangePasswordProps {
-  token: string | null;
+  token: string  | null;
 }
 
 const ChangePassword: NextPage<ChangePasswordProps> = ({ token }) => {
@@ -33,7 +33,7 @@ const ChangePassword: NextPage<ChangePasswordProps> = ({ token }) => {
 
             const response = await changePassword({
               newPassword: values.newPassword,
-              token,
+              token: typeof router.query.token === "string" ? router.query.token: "",
             });
 
             if (response.data?.changePassword.errors) {
@@ -77,14 +77,6 @@ const ChangePassword: NextPage<ChangePasswordProps> = ({ token }) => {
   );
 };
 
-export const getServerSideProps = async (context: any) => {
-  const token = context.query.token;
 
-  return {
-    props: {
-      token: token || null,
-    },
-  };
-};
 
 export default withUrqlClient(createUrqlClient)(ChangePassword);
