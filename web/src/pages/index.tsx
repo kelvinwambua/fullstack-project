@@ -4,23 +4,32 @@ import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import { Link, Stack, Box, Heading, Text, Flex, Button } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface Post {
+  id: number;
+  title: string;
+  textSnippet: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const Index = () => {
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [variables, setVariables] = useState({
     limit: 10,
     cursor: null as null | string,
   });
 
-  console.log(variables);
-
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
 
-  if (!fetching && !data) {
-    return <div>you got query failed for some reason</div>;
-  }
+  useEffect(() => {
+    if (data?.posts) {
+      setAllPosts((prevPosts) => [...prevPosts, ...data.posts]);
+    }
+  }, [data]);
 
   return (
     <Layout>
@@ -31,19 +40,23 @@ const Index = () => {
         </NextLink>
       </Flex>
       <br />
-      {!data && fetching ? (
+      {allPosts.length > 0 ? (
+        <Stack spacing={8}>
+          {allPosts.map((p) =>
+            p ? (
+              <Box key={p.id} p={5} shadow="md" borderWidth="1px">
+                <Heading fontSize="xl">{p.title}</Heading>
+                <Text mt={4}>{p.textSnippet}</Text>
+              </Box>
+            ) : null
+          )}
+        </Stack>
+      ) : fetching ? (
         <div>loading...</div>
       ) : (
-        <Stack spacing={8}>
-          {data!.posts.map((p) => (
-            <Box key={p.id} p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">{p.title}</Heading>
-              <Text mt={4}>{p.textSnippet}</Text>
-            </Box>
-          ))}
-        </Stack>
+        <div>you got query failed for some reason</div>
       )}
-      {data ? (
+      {allPosts.length > 0 && data?.posts && (
         <Flex>
           <Button
             onClick={() => {
@@ -59,7 +72,7 @@ const Index = () => {
             load more
           </Button>
         </Flex>
-      ) : null}
+      )}
     </Layout>
   );
 };
