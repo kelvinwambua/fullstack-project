@@ -27,6 +27,7 @@ const cors_1 = __importDefault(require("cors"));
 const ioredis_1 = __importDefault(require("ioredis"));
 const User_1 = require("./entities/User");
 const Post_1 = require("./entities/Post");
+const path_1 = __importDefault(require("path"));
 let redis = new ioredis_1.default({ host: "localhost", port: 6379 });
 redis.on("connect", () => console.log("Redis Client Connected"));
 redis.on("error", (err) => console.error("Redis Client Error:", err));
@@ -41,11 +42,12 @@ const AppDataSource = new typeorm_1.DataSource({
     entities: [Post_1.Post, User_1.User],
     logging: true,
     subscribers: [],
-    migrations: [],
+    migrations: [path_1.default.join(__dirname, "/migrations/*")],
 });
 exports.AppDataSource = AppDataSource;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield AppDataSource.initialize();
+    AppDataSource.runMigrations();
     const app = (0, express_1.default)();
     app.set('trust proxy', 1);
     app.use((0, cors_1.default)({
