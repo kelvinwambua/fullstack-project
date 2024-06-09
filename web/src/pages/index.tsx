@@ -4,7 +4,7 @@ import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import { Link, Stack, Box, Heading, Text, Flex, Button } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -12,17 +12,11 @@ const Index = () => {
     cursor: null as null | string,
   });
 
+  console.log(variables);
+
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
-
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    if (data) {
-      setPosts((prevPosts) => [...prevPosts, ...data.posts.posts]);
-    }
-  }, [data]);
 
   if (!fetching && !data) {
     return <div>you got query failed for some reason</div>;
@@ -41,7 +35,7 @@ const Index = () => {
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
-          {posts.map((p) => (
+          {data!.posts.map((p) => (
             <Box key={p.id} p={5} shadow="md" borderWidth="1px">
               <Heading fontSize="xl">{p.title}</Heading>
               <Text mt={4}>{p.textSnippet}</Text>
@@ -49,13 +43,13 @@ const Index = () => {
           ))}
         </Stack>
       )}
-      {data && data.posts.hasMore ? (
+      {data ? (
         <Flex>
           <Button
             onClick={() => {
               setVariables({
                 limit: variables.limit,
-                cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+                cursor: data.posts[data.posts.length - 1].createdAt,
               });
             }}
             isLoading={fetching}
