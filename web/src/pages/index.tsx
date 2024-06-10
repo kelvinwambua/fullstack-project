@@ -1,6 +1,6 @@
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { usePostsQuery } from "../generated/graphql";
+import { useMeQuery, usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import { Link, Stack, Box, Heading, Text, Flex, Button } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -16,6 +16,7 @@ interface Post {
 
 const Index = () => {
   const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const[, ifLoggedIn] = useMeQuery();
   const [variables, setVariables] = useState({
     limit: 10,
     cursor: null as null | string,

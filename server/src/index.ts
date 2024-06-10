@@ -11,29 +11,14 @@ import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import cors from "cors"; // Import the cors package
 import Redis from "ioredis";
-import { User } from './entities/User';
-import { Post } from './entities/Post';
-import path from "path";
+import { AppDataSource } from "./typeormconfig";
 
 let redis = new Redis({ host: "localhost", port: 6379});
 redis.on("connect", () => console.log("Redis Client Connected"));
 redis.on("error", (err) => console.error("Redis Client Error:", err));
 
 
-const AppDataSource = new DataSource({
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  username: "postgres",
-  password: "King_kelvin1",
-  database: "postgres2",
-  synchronize: true,
-  entities: [Post, User],
-  logging: true,
-      subscribers: [],
-    migrations: [path.join(__dirname , "/migrations/*")],
 
-})
 
 
 

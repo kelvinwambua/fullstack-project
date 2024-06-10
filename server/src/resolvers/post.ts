@@ -45,6 +45,7 @@ export class PostResolver {
   async createPost(
     @Arg("input") input:PostInput,
     @Ctx(){req}:MyContext): Promise<Post> {
+    
 
     return Post.create({...input, creatorId:req.session.userId  }).save();
   }
