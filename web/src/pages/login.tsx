@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from "next/link";
-
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [, login] = useLoginMutation();
@@ -52,9 +51,9 @@ const Login: React.FC<{}> = ({}) => {
               mt={4}
               type="submit"
               isLoading={isSubmitting}
-              variant="teal"
+              variant="purple"
             >
-              login
+              Login
             </Button>
           </Form>
         )}

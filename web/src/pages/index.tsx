@@ -33,10 +33,9 @@ const Index = () => {
 
   return (
     <Layout>
-      <Flex align="center">
-        <Heading>LiReddit</Heading>
+    <Flex align="center" mr="auto">
         <NextLink href="/create-post">
-          <Link ml="auto">create post</Link>
+          <Link mr="auto"><Button>Create Post</Button></Link>
         </NextLink>
       </Flex>
       <br />

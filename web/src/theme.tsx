@@ -31,6 +31,7 @@ const theme = extendTheme({
   },
   colors: {
     black: "#16161D",
+    mainPurple:"#805AD5"
   },
   fonts,
   breakpoints,

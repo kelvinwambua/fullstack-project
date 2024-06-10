@@ -23,12 +23,12 @@ export const  NavBar: React.FC<NavBarProps> = ({}) => {
         body = (
             <>
           <NextLink href="/login"> 
-          <Link mr={4} fontWeight="bold" fontSize="xl">
+          <Link mr={4} fontWeight="bold" fontSize="xl" color={"white"}>
             Login
           </Link>
         </NextLink>
         <NextLink href="/register">
-          <Link mr={4} fontWeight="bold" fontSize="xl">
+          <Link mr={4} fontWeight="bold" fontSize="xl" color={"white"}>
             Register
           </Link>
         </NextLink>
@@ -38,21 +38,21 @@ export const  NavBar: React.FC<NavBarProps> = ({}) => {
     } else {
       body = (
         <Flex>
-          <Box mr={4}>{data.me.username}</Box>
-          <Button isLoading={logoutFetching} onClick={() => {logout({}); window.location.reload();}} variant="link">Logout</Button>
+          <Box mr={4} color={"white"}>{data.me.username}</Box>
+          <Button isLoading={logoutFetching} onClick={() => {logout({}); window.location.reload();}} color={"white"} variant="link">Logout</Button>
         </Flex>
       );
 
     }
 
   return (
-    <Flex zIndex={1} position="sticky" top={0} bg="tomato" p={4} justifyContent="space-between" alignItems="center"> 
+    <Flex zIndex={1} position="sticky" top={0} bg="mainPurple" p={4} justifyContent="space-between" alignItems="center"> 
     
  
       <Box>
         
-          <Link mr={4} fontWeight="bold" fontSize="xl">
-            Fullstack App
+          <Link mr={4} fontWeight="bold" fontSize="xl" color={"white"}>
+            Chirper
           </Link>
       </Box>
 
