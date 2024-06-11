@@ -7,8 +7,9 @@
 
 - Redis
 - PostgreSQL
+-
   [![My Skills](https://skillicons.dev/icons?i=postgres)](https://skillicons.dev)
-    [![My Skills](https://skillicons.dev/icons?i=redis)](https://skillicons.dev)
+  [![My Skills](https://skillicons.dev/icons?i=redis)](https://skillicons.dev)
 
 ## How to run this app
 
