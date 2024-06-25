@@ -1,7 +1,5 @@
 import "reflect-metadata";
-import {DataSource} from 'typeorm'
 import { COOKIE_NAME, __prod__ } from "./constants";
-
 import express from "express";
 import session from "express-session";
 import RedisStore from "connect-redis";
@@ -16,34 +14,11 @@ import { AppDataSource } from "./typeormconfig";
 let redis = new Redis({ host: "localhost", port: 6379});
 redis.on("connect", () => console.log("Redis Client Connected"));
 redis.on("error", (err) => console.error("Redis Client Error:", err));
-
-
-
-
-
-
-
-
 const main = async () => {
    await AppDataSource.initialize();
    AppDataSource.runMigrations();
-
-  
- 
-  
-
- 
-
-  
-
-
-  
   const app = express();
   app.set('trust proxy', 1);
-
-
-
-
   app.use(
     cors({
       origin: ["http://localhost:3000", "https://studio.apollographql.com"],
@@ -85,7 +60,6 @@ const main = async () => {
   });
 };
 export {AppDataSource};
-
 main().catch((err) => {
   console.error("Error starting server:", err);
 });
