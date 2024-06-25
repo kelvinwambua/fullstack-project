@@ -59,6 +59,22 @@ let PostResolver = class PostResolver {
         }
         return (`${root.text.slice(0, 100)}....`);
     }
+    vote(postId_1, value_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (postId, value, { req }) {
+            const isVote = value !== -1;
+            const realValue = isVote ? 1 : -1;
+            const { userId } = req.session;
+            yield index_1.AppDataSource.query(`
+        START TRANSACTION
+        insert into vote ("userId", "postId", value)
+        values (${userId}, ${postId}, ${realValue});
+        update post
+        set p.points = p.points + ${realValue}
+        where p.id = ${postId};
+        COMMIT;`);
+            return true;
+        });
+    }
     posts(limit, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
             const realLimit = Math.min(50, limit);
@@ -68,6 +84,7 @@ let PostResolver = class PostResolver {
                 replacements.push(new Date(parseInt(cursor)));
             }
             const posts = yield index_1.AppDataSource.query(`
+    
       select p.*,
       json_build_object(
         'id', u.id,
@@ -124,6 +141,16 @@ __decorate([
     __metadata("design:paramtypes", [Post_1.Post]),
     __metadata("design:returntype", void 0)
 ], PostResolver.prototype, "textSnippet", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Arg)("postId", () => type_graphql_1.Int)),
+    __param(1, (0, type_graphql_1.Arg)("value", () => type_graphql_1.Int)),
+    __param(2, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number, Object]),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "vote", null);
 __decorate([
     (0, type_graphql_1.Query)(() => PaginatedPosts),
     __param(0, (0, type_graphql_1.Arg)("limit", () => type_graphql_1.Int)),

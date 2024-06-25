@@ -10,6 +10,7 @@ import {
 
 } from "typeorm";
 import { Post } from "./Post";
+import { Vote } from "./Vote";
 
 
 @ObjectType()
@@ -33,6 +34,9 @@ export class User extends BaseEntity {
   password!: string;
   @OneToMany(() => Post, post => post.creator)
   posts: Post[];
+
+  @OneToMany(() => Vote, (vote) => vote.user)
+  votes: Vote[];
 
 
 

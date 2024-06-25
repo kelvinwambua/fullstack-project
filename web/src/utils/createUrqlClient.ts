@@ -1,11 +1,12 @@
 import { url } from "inspector";
-import {debugExchange, fetchExchange, Exchange, stringifyVariables } from "urql";
+import {debugExchange, fetchExchange, Exchange, stringifyVariables, Query } from "urql";
 import { LoginMutation, MeDocument, MeQuery, RegisterMutation } from "../generated/graphql";
 import { Resolver, cacheExchange } from "@urql/exchange-graphcache";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {pipe, tap} from "wonka";	
 import  Router  from "next/router";
 import { FieldsOnCorrectTypeRule } from "graphql";
+import createPost from "../pages/create-post";
 
 export const errorExchange: Exchange = ({forward}) => (ops$) => {
   return pipe (
@@ -106,6 +107,17 @@ export const createUrqlClient = (ssrExchange: any) => ({
     },
     updates: {
       Mutation: {
+        createPost: (_result, _args, cache, _info) => {
+          const allFields = cache.inspectFields("Query");
+          const fieldInfos = allFields.filter((info)=> info.fieldName === "posts");
+          fieldInfos.forEach((fi)=>{
+            cache.invalidate("Query","posts" , fi.arguments || {})
+          })
+          cache.invalidate("Query", "posts", {
+              limit:15
+            });
+            
+        },
         logout: (_result, _args, cache, _info) => {
           betterUpdateQuery<LoginMutation, MeQuery>(cache,{query: MeDocument},
            _result, () => null

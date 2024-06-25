@@ -1,68 +1,70 @@
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { useMeQuery, usePostsQuery } from "../generated/graphql";
+import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
-import { Link, Stack, Box, Heading, Text, Flex, Button } from "@chakra-ui/react";
+import { Link, Stack, Box, Heading, Text, Flex, Button, Icon } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useState, useEffect } from "react";
-
-interface Post {
-  id: number;
-  title: string;
-  textSnippet: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 
 const Index = () => {
-  const [allPosts, setAllPosts] = useState<Post[]>([]);
-  const[, ifLoggedIn] = useMeQuery();
   const [variables, setVariables] = useState({
-    limit: 10,
+    limit: 33,
     cursor: null as null | string,
   });
+
+  const [allPosts, setAllPosts] = useState<any[]>([]);
 
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
 
   useEffect(() => {
-    if (data?.posts) {
-      setAllPosts((prevPosts) => [...prevPosts, ...data.posts]);
+    if (data && data.posts.posts) {
+      setAllPosts((prevPosts) => [...prevPosts, ...data.posts.posts]);
     }
   }, [data]);
 
+  if (!fetching && !data) {
+    return <div>you got query failed for some reason</div>;
+  }
+
   return (
     <Layout>
-    <Flex align="center" mr="auto">
+      <Flex align="center">
         <NextLink href="/create-post">
-          <Link mr="auto"><Button>Create Post</Button></Link>
+          <Link ml="auto">create post</Link>
         </NextLink>
       </Flex>
       <br />
-      {allPosts.length > 0 ? (
-        <Stack spacing={8}>
-          {allPosts.map((p) =>
-            p ? (
-              <Box key={p.id} p={5} shadow="md" borderWidth="1px">
-                <Heading fontSize="xl">{p.title}</Heading>
-                <Text mt={4}>{p.textSnippet}</Text>
-              </Box>
-            ) : null
-          )}
-        </Stack>
-      ) : fetching ? (
+      {!data && fetching ? (
         <div>loading...</div>
       ) : (
-        <div>you got query failed for some reason</div>
+        <Stack spacing={8}>
+          {allPosts.map((p) => (
+            <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+            <Flex>    
+              <ChevronUpIcon/>  
+              {p.points}
+              <ChevronDownIcon/>
+              </Flex>
+              <Box>            
+                <Heading fontSize="xl">{p.title}</Heading>
+                <Text mt={4}>Posted by {p.creator.username}</Text>
+                <Text mt={4}>{p.textSnippet}</Text>
+              </Box>
+
+            </Flex>
+          ))}
+        </Stack>
       )}
-      {allPosts.length > 0 && data?.posts && (
+      {data && data.posts.hasMore ? (
         <Flex>
           <Button
             onClick={() => {
               setVariables({
                 limit: variables.limit,
-                cursor: data.posts[data.posts.length - 1].createdAt,
+                cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
               });
             }}
             isLoading={fetching}
@@ -72,7 +74,7 @@ const Index = () => {
             load more
           </Button>
         </Flex>
-      )}
+      ) : null}
     </Layout>
   );
 };

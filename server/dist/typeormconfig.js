@@ -8,6 +8,7 @@ const User_1 = require("./entities/User");
 const Post_1 = require("./entities/Post");
 const path_1 = __importDefault(require("path"));
 const typeorm_1 = require("typeorm");
+const Vote_1 = require("./entities/Vote");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
     host: "localhost",
@@ -16,7 +17,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     password: "King_kelvin1",
     database: "postgres2",
     synchronize: true,
-    entities: [Post_1.Post, User_1.User],
+    entities: [Post_1.Post, User_1.User, Vote_1.Vote],
     logging: true,
     subscribers: [],
     migrations: [path_1.default.join(__dirname, "/migrations/*")],

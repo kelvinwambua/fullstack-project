@@ -3,6 +3,7 @@ import { Post } from "../entities/Post";
 import { MyContext } from "src/types";
 import { isAuth } from "../middleware/isAuth";
 import { AppDataSource } from "../index";
+import { Vote } from "../entities/Vote";
 
 @InputType()
 class PostInput {
@@ -28,6 +29,30 @@ export class PostResolver {
       }
       return (`${root.text.slice(0,100)}....`);
     }
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuth)
+    async vote(
+      @Arg("postId", () => Int) postId: number,
+      @Arg("value", () => Int) value: number,
+      @Ctx(){req}:MyContext
+    ){
+      const isVote = value !== -1;
+      const realValue = isVote ? 1 : -1;
+      const {userId} = req.session;
+      // await Vote.insert({
+      //   userId,
+      //   postId,
+      //   value: realValue});
+      await AppDataSource.query(`
+        START TRANSACTION
+        insert into vote ("userId", "postId", value)
+        values (${userId}, ${postId}, ${realValue});
+        update post
+        set p.points = p.points + ${realValue}
+        where p.id = ${postId};
+        COMMIT;`)
+      return true;
+    }
  
 
     @Query(() => PaginatedPosts)
@@ -47,6 +72,7 @@ export class PostResolver {
   
       const posts = await AppDataSource.query(
         `
+    
       select p.*,
       json_build_object(
         'id', u.id,

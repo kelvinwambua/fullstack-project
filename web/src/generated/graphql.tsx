@@ -33,6 +33,7 @@ export type Mutation = {
   logout: Scalars['Boolean']['output'];
   register: UserResponse;
   updatePost?: Maybe<Post>;
+  vote: Scalars['Boolean']['output'];
 };
 
 
@@ -73,9 +74,22 @@ export type MutationUpdatePostArgs = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
+
+export type MutationVoteArgs = {
+  postId: Scalars['Int']['input'];
+  value: Scalars['Int']['input'];
+};
+
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
+  hasMore: Scalars['Boolean']['output'];
+  posts: Array<Post>;
+};
+
 export type Post = {
   __typename?: 'Post';
   createdAt: Scalars['String']['output'];
+  creator: User;
   creatorId: Scalars['Float']['output'];
   id: Scalars['Float']['output'];
   points: Scalars['Float']['output'];
@@ -94,7 +108,7 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   post?: Maybe<Post>;
-  posts: Array<Post>;
+  posts: PaginatedPosts;
 };
 
 
@@ -181,7 +195,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: number, title: string, textSnippet: string, createdAt: string, updatedAt: string }> };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', id: number, title: string, textSnippet: string, createdAt: string, updatedAt: string, points: number, creator: { __typename?: 'User', id: number, username: string } }> } };
 
 export type RegisterMutationVariables = Exact<{
   options: UsernamePasswordInput;
@@ -284,11 +298,19 @@ export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, '
 export const PostsDocument = gql`
     query Posts($limit: Int!, $cursor: String) {
   posts(limit: $limit, cursor: $cursor) {
-    id
-    title
-    textSnippet
-    createdAt
-    updatedAt
+    hasMore
+    posts {
+      id
+      title
+      textSnippet
+      createdAt
+      updatedAt
+      points
+      creator {
+        id
+        username
+      }
+    }
   }
 }
     `;

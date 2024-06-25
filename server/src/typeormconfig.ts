@@ -5,6 +5,7 @@ import {User} from "./entities/User";
 import {Post} from "./entities/Post";
 import path from "path";
 import { DataSource } from "typeorm";
+import { Vote } from "./entities/Vote";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
     password: "King_kelvin1",
     database: "postgres2",
     synchronize: true,
-    entities: [Post, User],
+    entities: [Post, User,Vote],
     logging: true,
         subscribers: [],
       migrations: [path.join(__dirname , "/migrations/*")],
