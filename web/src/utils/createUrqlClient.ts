@@ -1,6 +1,6 @@
 import { url } from "inspector";
-import {debugExchange, fetchExchange, Exchange, stringifyVariables, Query } from "urql";
-import { LoginMutation, MeDocument, MeQuery, RegisterMutation } from "../generated/graphql";
+import {debugExchange, fetchExchange, Exchange, stringifyVariables, Query, gql } from "urql";
+import { LoginMutation, MeDocument, MeQuery, RegisterMutation, VoteMutationVariables } from "../generated/graphql";
 import { Resolver, cacheExchange } from "@urql/exchange-graphcache";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {pipe, tap} from "wonka";	
@@ -107,6 +107,46 @@ export const createUrqlClient = (ssrExchange: any) => ({
     },
     updates: {
       Mutation: {
+        vote: (_result, args, cache, info) => {
+          const { postId, value } = args as VoteMutationVariables;
+          const data = cache.readFragment(
+            gql`
+              fragment _ on Post {
+                id
+                points
+                voteStatus
+              }
+            `,
+            { id: postId } as any
+          );
+
+          if (data) {
+            const isUpvote = value === 1;
+            const currentVoteStatus = data.voteStatus || 0; // Default to 0 if not voted
+
+            let newVoteStatus = currentVoteStatus + value;
+            if (
+              (isUpvote && currentVoteStatus === 1) ||
+              (!isUpvote && currentVoteStatus === -1)
+            ) {
+              newVoteStatus = 0; // Reset vote if same action again
+            }
+
+            const newPoints = (data.points as number) + value;
+
+            cache.writeFragment(
+              gql`
+                fragment __ on Post {
+                  id
+                  points
+                  voteStatus
+                }
+              `,
+              { id: postId, points: newPoints, voteStatus: newVoteStatus } as any
+            );
+          }
+        },
+
         createPost: (_result, _args, cache, _info) => {
           const allFields = cache.inspectFields("Query");
           const fieldInfos = allFields.filter((info)=> info.fieldName === "posts");

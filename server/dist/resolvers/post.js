@@ -25,7 +25,8 @@ exports.PostResolver = void 0;
 const type_graphql_1 = require("type-graphql");
 const Post_1 = require("../entities/Post");
 const isAuth_1 = require("../middleware/isAuth");
-const index_1 = require("../index");
+const Vote_1 = require("../entities/Vote");
+const __1 = require("../");
 let PostInput = class PostInput {
 };
 __decorate([
@@ -53,25 +54,42 @@ PaginatedPosts = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], PaginatedPosts);
 let PostResolver = class PostResolver {
-    textSnippet(root) {
-        if (root.text.length <= 50) {
-            return root.text;
-        }
-        return (`${root.text.slice(0, 100)}....`);
+    textSnippet(post) {
+        return post.text.slice(0, 50);
     }
     vote(postId_1, value_1, _a) {
         return __awaiter(this, arguments, void 0, function* (postId, value, { req }) {
-            const isVote = value !== -1;
-            const realValue = isVote ? 1 : -1;
+            const isUpdoot = value !== -1;
+            const realValue = isUpdoot ? 1 : -1;
             const { userId } = req.session;
-            yield index_1.AppDataSource.query(`
-        START TRANSACTION
-        insert into vote ("userId", "postId", value)
-        values (${userId}, ${postId}, ${realValue});
-        update post
-        set p.points = p.points + ${realValue}
-        where p.id = ${postId};
-        COMMIT;`);
+            const vote = yield Vote_1.Vote.findOne({ where: { postId, userId } });
+            if (vote && vote.value !== realValue) {
+                yield __1.AppDataSource.transaction((tm) => __awaiter(this, void 0, void 0, function* () {
+                    yield tm.query(`
+    update vote
+    set value = $1
+    where "postId" = $2 and "userId" = $3
+        `, [realValue, postId, userId]);
+                    yield tm.query(`
+          update post
+          set points = points + $1
+          where id = $2
+        `, [2 * realValue, postId]);
+                }));
+            }
+            else if (!vote) {
+                yield __1.AppDataSource.transaction((tm) => __awaiter(this, void 0, void 0, function* () {
+                    yield tm.query(`
+    insert into vote ("userId", "postId", value)
+    values ($1, $2, $3)
+        `, [userId, postId, realValue]);
+                    yield tm.query(`
+    update post
+    set points = points + $1
+    where id = $2
+      `, [realValue, postId]);
+                }));
+            }
             return true;
         });
     }
@@ -83,23 +101,21 @@ let PostResolver = class PostResolver {
             if (cursor) {
                 replacements.push(new Date(parseInt(cursor)));
             }
-            const posts = yield index_1.AppDataSource.query(`
-    
-      select p.*,
-      json_build_object(
-        'id', u.id,
-        'username', u.username,
-        'email', u.email,
-        'createdAt', u."createdAt",
-        'updatedAt', u."updatedAt"
-        ) creator
-      from post p
-      inner join public.user u on u.id = p."creatorId"
-      ${cursor ? `where p."createdAt" < $2` : ""}
-      order by p."createdAt" DESC
-      limit $1
-      `, replacements);
-            console.log("posts: ", posts);
+            const posts = yield __1.AppDataSource.query(`
+    select p.*,
+    json_build_object(
+      'id', u.id,
+      'username', u.username,
+      'email', u.email,
+      'createdAt', u."createdAt",
+      'updatedAt', u."updatedAt"
+      ) creator
+    from post p
+    inner join public.user u on u.id = p."creatorId"
+    ${cursor ? `where p."createdAt" < $2` : ""}
+    order by p."createdAt" DESC
+    limit $1
+    `, replacements);
             return {
                 posts: posts.slice(0, realLimit),
                 hasMore: posts.length === reaLimitPlusOne,
