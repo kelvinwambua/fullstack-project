@@ -1,5 +1,5 @@
 import { url } from "inspector";
-import {debugExchange, fetchExchange, Exchange, stringifyVariables, Query, gql } from "urql";
+import {debugExchange, fetchExchange, Exchange, stringifyVariables, Query } from "urql";
 import { LoginMutation, MeDocument, MeQuery, RegisterMutation, VoteMutationVariables } from "../generated/graphql";
 import { Resolver, cacheExchange } from "@urql/exchange-graphcache";
 import { betterUpdateQuery } from "./betterUpdateQuery";
@@ -7,6 +7,8 @@ import {pipe, tap} from "wonka";
 import  Router  from "next/router";
 import { FieldsOnCorrectTypeRule } from "graphql";
 import createPost from "../pages/create-post";
+import gql from "graphql-tag";
+import * as Urql from 'urql';
 
 export const errorExchange: Exchange = ({forward}) => (ops$) => {
   return pipe (
@@ -121,28 +123,19 @@ export const createUrqlClient = (ssrExchange: any) => ({
           );
 
           if (data) {
-            const isUpvote = value === 1;
-            const currentVoteStatus = data.voteStatus || 0; // Default to 0 if not voted
-
-            let newVoteStatus = currentVoteStatus + value;
-            if (
-              (isUpvote && currentVoteStatus === 1) ||
-              (!isUpvote && currentVoteStatus === -1)
-            ) {
-              newVoteStatus = 0; // Reset vote if same action again
+            if (data.voteStatus === value) {
+              return;
             }
-
-            const newPoints = (data.points as number) + value;
-
+            const newPoints =
+              (data.points as number) + (!data.voteStatus ? 1 : 2) * value;
             cache.writeFragment(
               gql`
                 fragment __ on Post {
-                  id
                   points
                   voteStatus
                 }
               `,
-              { id: postId, points: newPoints, voteStatus: newVoteStatus } as any
+              { id: postId, points: newPoints, voteStatus: value } as any
             );
           }
         },

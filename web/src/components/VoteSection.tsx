@@ -1,71 +1,53 @@
-import React, { useState } from 'react'
-import { PostSnippetFragment, useVoteMutation } from '../generated/graphql';
+import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { IconButton, Flex } from '@chakra-ui/react';
+import { PostSnippetFragment, useVoteMutation } from '../generated/graphql';
 
 interface VoteSectionProps {
-    post: PostSnippetFragment
+  post: PostSnippetFragment;
 }
 
-export const VoteSection: React.FC<VoteSectionProps> = ({post}) => {
-    const [,vote] = useVoteMutation()
-    const [loadingState, setLoadingState] = useState<'upvote-loading'| 'downvote-loading'| 'not-loading'>('not-loading');
-    const [pointsState, setPointsState] = useState(post.points);
-    const [voteStatus, setVoteStatus] = useState(post.voteStatus);
+export const VoteSection: React.FC<VoteSectionProps> = ({ post }) => {
+  const [, vote] = useVoteMutation();
+  const [isLoading, setIsLoading] = useState(false);
 
-    const updateVote = async (value: number) => {
-        if (voteStatus === value) {
-            return; // If already voted this way, do nothing
-        }
-        
-        setLoadingState(value === 1 ? 'upvote-loading' : 'downvote-loading');
-        
-        // Optimistically update UI
-        setVoteStatus(value);
-        setPointsState(prevPoints => prevPoints + value - (post.voteStatus || 0));
+  const handleVote = async (value: number) => {
+    if (post.voteStatus === value) return;
+    setIsLoading(true);
 
-        try {
-            const response = await vote({
-                postId: post.id,
-                value: value,
-            });
-            if (!response.data?.vote) {
-                // If vote failed, revert changes
-                setVoteStatus(post.voteStatus);
-                setPointsState(post.points);
-            }
-        } catch (error) {
-            console.error("Voting error:", error);
-            // Revert changes on error
-            setVoteStatus(post.voteStatus);
-            setPointsState(post.points);
-        }
-        setLoadingState('not-loading');
-    };
+    try {
+      // Optimistic UI Update (assuming points cannot be null)
+      post.points = (post.points ?? 0) + (post.voteStatus ? 2 : 1) * value;
+      post.voteStatus = value; 
 
-    return (
-        <Flex direction="column" justifyContent="center" alignItems="center" mr={4} >    
-            <IconButton 
-                isRound={false} 
-                variant='solid' 
-                colorScheme={voteStatus === 1 ? "green" : "gray"}
-                aria-label='Upvote'
-                fontSize='lg' 
-                onClick={() => updateVote(1)}
-                isLoading={loadingState === 'upvote-loading'}
-                icon={<ChevronUpIcon />}
-            />
-            {pointsState}
-            <IconButton 
-                isRound={false} 
-                variant='outline' 
-                colorScheme={voteStatus === -1 ? "red" : "gray"} 
-                aria-label='Downvote'
-                fontSize='lg' 
-                onClick={() => updateVote(-1)}
-                isLoading={loadingState === 'downvote-loading'}
-                icon={<ChevronDownIcon />}
-            />
-        </Flex>
-    );
-}
+      await vote({ postId: post.id, value });
+    } catch (error) {
+      console.error('Vote failed:', error);
+      // Handle errors (e.g., show a toast message)
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Flex direction="column" justifyContent="center" alignItems="center" mr={4}>
+      <IconButton
+        isLoading={isLoading}
+        variant={post.voteStatus === 1 ? 'solid' : 'outline'}
+        colorScheme={post.voteStatus === 1 ? 'green' : 'gray'}
+        aria-label="Upvote"
+        onClick={() => handleVote(1)}
+        icon={<ChevronUpIcon />}
+      />
+      {post.points} 
+      <IconButton
+        isLoading={isLoading}
+        variant={post.voteStatus === -1 ? 'solid' : 'outline'}
+        colorScheme={post.voteStatus === -1 ? 'red' : 'gray'}
+        aria-label="Downvote"
+        onClick={() => handleVote(-1)}
+        icon={<ChevronDownIcon />}
+      />
+    </Flex>
+  );
+};
