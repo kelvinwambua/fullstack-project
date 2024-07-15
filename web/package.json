@@ -5,14 +5,16 @@
     "build": "next build",
     "start": "next start",
     "gen": "graphql-codegen --config codegen.yml"
+    
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.2",
     "@chakra-ui/react": "^2.2.1",
     "@chakra-ui/theme-tools": "^2.0.2",
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.9.0",
-    "@graphql-codegen/cli": "^5.0.2",
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "framer-motion": "^6.3.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
@@ -23,6 +25,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.3.1",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "urql": "^4.1.0"
   },
   "devDependencies": {
@@ -30,13 +34,16 @@
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/client-preset": "4.2.6",
     "@graphql-codegen/introspection": "4.0.3",
-    "@graphql-codegen/typescript": "4.2.6",
-    "@graphql-codegen/typescript-operations": "4.2.6",
+    "@graphql-codegen/typescript": "4.0.7",
+    "@graphql-codegen/typescript-operations": "4.2.3",
     "@graphql-codegen/typescript-urql": "^4.0.0",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "autoprefixer": "^10.4.19",
     "formik": "^2.4.6",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.4",
     "typescript": "^4.7.2"
   }
 }
