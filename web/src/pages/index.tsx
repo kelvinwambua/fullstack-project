@@ -2,11 +2,12 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
-import { Link, Stack, Box, Heading, Text, Flex, Button, Icon, IconButton } from "@chakra-ui/react";
+import { Link, Stack, Box, Heading, Text, Flex, Icon, IconButton } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useState, useEffect } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { VoteSection } from "../components/VoteSection";
+import { Button as ShadcnButton } from "../components/ui/button";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -33,8 +34,12 @@ const Index = () => {
   return (
     <Layout>
       <Flex align="center">
+      <ShadcnButton variant="ghost">Button</ShadcnButton>
+
+
         <NextLink href="/create-post">
-          <Link ml="auto">create post</Link>
+          <Link ml="auto">
+          Create Post</Link>
         </NextLink>
       </Flex>
       <br />
@@ -58,7 +63,7 @@ const Index = () => {
       )}
       {data && data.posts.hasMore ? (
         <Flex>
-          <Button
+          <ShadcnButton
             onClick={() => {
               setVariables({
                 limit: variables.limit,
@@ -70,7 +75,7 @@ const Index = () => {
             my={8}
           >
             load more
-          </Button>
+          </ShadcnButton>
         </Flex>
       ) : null}
     </Layout>

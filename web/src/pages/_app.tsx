@@ -4,16 +4,18 @@ import { AppProps } from "next/app";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { ThemeProvider } from "@emotion/react";
+import "../styles/global.css";
+import "../styles/output.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={theme}>
+    
     <ChakraProvider theme={theme}>
       
       <Component {...pageProps}/>
 
     </ChakraProvider>
-    </ThemeProvider>
+
   );
 }
 
