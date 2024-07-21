@@ -40,7 +40,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <Flex alignItems="center" gap={2}>
         <Box>{data.me.username}</Box>
-        <ShadButton  variant="destructive"
+        <ShadButton 
           onClick={() => {logout({}); window.location.reload();}}
           disabled={logoutFetching}
         >
