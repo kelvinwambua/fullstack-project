@@ -2,7 +2,7 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
 import { Layout } from "../components/Layout";
-import { Link, Stack, Box, Heading, Text, Flex, Icon, IconButton } from "@chakra-ui/react";
+import { Link, Stack, Box, Heading, Text, Flex, Icon, IconButton, Button } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useState, useEffect } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
@@ -34,12 +34,10 @@ const Index = () => {
   return (
     <Layout>
       <Flex align="center">
-      <ShadcnButton variant="ghost">Button</ShadcnButton>
 
 
         <NextLink href="/create-post">
-          <Link ml="auto">
-          Create Post</Link>
+         <ShadcnButton>Create Post</ShadcnButton>
         </NextLink>
       </Flex>
       <br />
