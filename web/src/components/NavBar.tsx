@@ -1,64 +1,71 @@
 import React from "react";
-import { Box, Flex, Link, Button } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "../components/ui/menubar"
+import { Button as ShadButton } from "../components/ui/button"
+
 interface NavBarProps {}
 
-
-export const  NavBar: React.FC<NavBarProps> = ({}) => {
-    const route = useRouter();
-    const[{fetching:logoutFetching},logout] = useLogoutMutation();
-    const [{data, fetching}] = useMeQuery({
-      pause: isServer(),
-    });
+export const NavBar: React.FC<NavBarProps> = ({}) => {
+  const route = useRouter();
+  const [{fetching:logoutFetching}, logout] = useLogoutMutation();
+  const [{data, fetching}] = useMeQuery({
+    pause: isServer(),
+  });
    
-    
-    let body = null;
-    if(fetching){
-        body = null;
-
-    } else if (!data?.me){
-        body = (
-            <>
-          <NextLink href="/login"> 
-          <Link mr={4} fontWeight="bold" fontSize="xl" color={"white"}>
-            Login
-          </Link>
+  let body = null;
+  if (fetching) {
+    body = null;
+  } else if (!data?.me) {
+    body = (
+      <Flex gap={2}>
+        <NextLink href="/login">
+          <ShadButton>Login</ShadButton>
         </NextLink>
         <NextLink href="/register">
-          <Link mr={4} fontWeight="bold" fontSize="xl" color={"white"}>
-            Register
-          </Link>
+          <ShadButton>Register</ShadButton>
         </NextLink>
-        </>
-        );
-
-    } else {
-      body = (
-        <Flex>
-          <Box mr={4} color={"white"}>{data.me.username}</Box>
-          <Button isLoading={logoutFetching} onClick={() => {logout({}); window.location.reload();}} color={"white"} variant="link">Logout</Button>
-        </Flex>
-      );
-
-    }
+      </Flex>
+    );
+  } else {
+    body = (
+      <Flex alignItems="center" gap={2}>
+        <Box>{data.me.username}</Box>
+        <ShadButton 
+          onClick={() => {logout({}); window.location.reload();}}
+          disabled={logoutFetching}
+        >
+          Logout
+        </ShadButton>
+      </Flex>
+    );
+  }
 
   return (
-    <Flex zIndex={1} position="sticky" top={0} bg="mainPurple" p={4} justifyContent="space-between" alignItems="center"> 
-    
- 
-      <Box>
-        
-          <Link mr={4} fontWeight="bold" fontSize="xl" color={"white"}>
-            Chirper
-          </Link>
-      </Box>
-
-      <Box>
+    <Menubar
+      className="flex justify-between items-center"
+      style={{
+        zIndex: 1,
+        position: 'sticky',
+        top: 0,
+        padding: '1.5rem',
+      }}
+    >
+      <MenubarMenu>
+        <h1 className="font-semibold text-l">Chirper</h1>
+      </MenubarMenu>
+      <MenubarMenu>
         {body}
-      </Box>
-    </Flex>
+      </MenubarMenu>
+    </Menubar>
   );
 };

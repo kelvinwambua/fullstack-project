@@ -61,7 +61,7 @@ const Index = () => {
       )}
       {data && data.posts.hasMore ? (
         <Flex>
-          <ShadcnButton
+          <Button
             onClick={() => {
               setVariables({
                 limit: variables.limit,
@@ -73,7 +73,7 @@ const Index = () => {
             my={8}
           >
             load more
-          </ShadcnButton>
+          </Button>
         </Flex>
       ) : null}
     </Layout>
