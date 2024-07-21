@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Wrapper from '../components/Wrapper';
 import { Button, Box } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
+import { Button as ShadButton } from '../components/ui/button';
 
 import router from 'next/router';
 import { InputField } from '../components/inputField';
@@ -45,15 +46,17 @@ const CreatePost: React.FC<{}> = ({}) => {
                 label="Body"
               />
             </Box>
-
+            <ShadButton className='p-2 mt-4	'>
             <Button
-              mt={4}
               type="submit"
               isLoading={isSubmitting}
               variant="teal"
             >
               Create Post
             </Button>
+            </ShadButton>
+
+   
           </Form>
         )}
       </Formik>

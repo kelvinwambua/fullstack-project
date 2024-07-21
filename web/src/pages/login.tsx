@@ -52,7 +52,7 @@ const Login: React.FC<{}> = ({}) => {
             <Button
               type="submit"
               isLoading={isSubmitting}
-              variant="purple"
+              
             >
               Login
             </Button>
