@@ -18,14 +18,14 @@
 
 <h1>Ensure you have the following installed</h1>
 
-[Postgres](https://www.postgresql.org/download/)!
-[Redis](https://redis.io/downloads/)!
+[Postgres](https://www.postgresql.org/download/)
+[Redis](https://redis.io/downloads/)
 
 For Postgres use the pgAdmin to create a database, Remember the password and database name
 
 <h1>Clone the Repository<h2>
 
-```git
+```
 
 git clone https://github.com/kelvinwambua/fullstack-project
 ```
@@ -34,30 +34,27 @@ git clone https://github.com/kelvinwambua/fullstack-project
 
 <h3>Yarn</h3>
 
-```yarn
+```
 cd web
 yarn
-
 ```
 <h3>NPM</h3>
-```npm
+```
 cd web
 npm install
 ```
 
 <h3>Yarn</h3>
 
-```yarn
+```
 cd server
 yarn
-
 ```
 <h3>Yarn</h3>
 
-```npm
+```
 cd server
 npm install
-
 ```
 
 
@@ -68,19 +65,19 @@ NOTE: You will need 2 or 3 terminal instances
 <h2>Run the frontend</h2>
 
 <h3>Yarn</h3>
-```yarn
+```
 cd web
 yarn dev
 ```
 <h3>NPM</h3>
-```yarn
+```
 cd web
 npm run dev
 ```
 <h2>Start Up the server in another terminal instance</h2>
 
 <h3>Yarn</h3>
-```yarn
+```
 cd server
 yarn watch
 ```
