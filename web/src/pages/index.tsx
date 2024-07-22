@@ -11,6 +11,7 @@ import { Button as ShadcnButton } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 
+
 const Index = () => {
   const [variables, setVariables] = useState({
     limit: 33,
@@ -51,7 +52,7 @@ const Index = () => {
             <Card key={p.id}>
               <CardHeader>
                 <CardTitle>{p.title}</CardTitle>
-                <CardDescription>
+                <CardDescription className="flex">
                   <Badge variant="outline">{p.creator.username}</Badge>
                 </CardDescription>
               </CardHeader>

@@ -62,7 +62,9 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
       }}
     >
       <MenubarMenu>
-        <h1 className="font-semibold text-l">Chirper</h1>
+        <NextLink href="/">
+        <h1 className="font-semibold text-l">Sonder</h1>
+        </NextLink>
       </MenubarMenu>
       <MenubarMenu>
         {body}
