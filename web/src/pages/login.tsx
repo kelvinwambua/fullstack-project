@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import  Wrapper  from "../components/Wrapper";
 import { InputField } from "../components/inputField";
 import { useLoginMutation } from "../generated/graphql";
@@ -9,7 +9,8 @@ import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from "next/link";
-import {Button as ShadButton} from "../components/ui/button";
+import {Button } from "../components/ui/button";
+import { Loader2 } from "lucide-react"
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [, login] = useLoginMutation();
@@ -48,15 +49,19 @@ const Login: React.FC<{}> = ({}) => {
             <NextLink href="/forgot-password">
               <Box>forgot password?</Box>
             </NextLink>
-            <ShadButton className="align-middle mt-4 p-2">
-            <Button
-              type="submit"
-              isLoading={isSubmitting}
-              
-            >
-              Login
+            <Button className="align-middle mt-4 p-2" type="submit">
+
+            
+            {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  
+                </>
+              ) : (
+                'Login'
+              )}
+           
             </Button>
-            </ShadButton>
      
           </Form>
         )}

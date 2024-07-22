@@ -23,7 +23,7 @@
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "isomorphic-unfetch": "^4.0.2",
-    "lucide-react": "^0.412.0",
+    "lucide-react": "^0.414.0",
     "next": "latest",
     "next-themes": "^0.3.0",
     "next-urql": "^5.0.2",

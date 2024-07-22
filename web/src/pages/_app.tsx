@@ -6,7 +6,6 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 
 import "../styles/global.css";
 import "../styles/output.css";
-import { ThemeProvider } from "../components/themeprovider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

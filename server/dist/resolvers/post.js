@@ -55,7 +55,7 @@ PaginatedPosts = __decorate([
 ], PaginatedPosts);
 let PostResolver = class PostResolver {
     textSnippet(post) {
-        return post.text.slice(0, 50);
+        return post.text.slice(0, 300);
     }
     vote(postId_1, value_1, _a) {
         return __awaiter(this, arguments, void 0, function* (postId, value, { req }) {

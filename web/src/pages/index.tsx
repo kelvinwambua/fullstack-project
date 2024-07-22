@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { VoteSection } from "../components/VoteSection";
 import { Button as ShadcnButton } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -44,20 +46,29 @@ const Index = () => {
       {!data && fetching ? (
         <div>loading...</div>
       ) : (
-        <Stack spacing={8}>
+        <div className="space-y-8">
           {allPosts.map((p) => (
-            <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
-              <VoteSection post={p}/>
-
-              <Box>            
-                <Heading fontSize="xl">{p.title}</Heading>
-                <Text mt={4}>Posted by {p.creator.username}</Text>
-                <Text mt={4}>{p.textSnippet}</Text>
-              </Box>
-
-            </Flex>
+            <Card key={p.id}>
+              <CardHeader>
+                <CardTitle>{p.title}</CardTitle>
+                <CardDescription>
+                  <Badge variant="outline">{p.creator.username}</Badge>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex">
+                  <VoteSection post={p}/>
+                  <div className="ml-4">
+                    <p className="text-base">{p.textSnippet}</p>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter>
+                {timeAgo(new Date(parseInt(p.createdAt)))}
+              </CardFooter>
+            </Card>
           ))}
-        </Stack>
+        </div>
       )}
       {data && data.posts.hasMore ? (
         <Flex>
@@ -79,5 +90,33 @@ const Index = () => {
     </Layout>
   );
 };
+function timeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000);
+
+  let interval = seconds / 31536000;
+  if (interval > 1) {
+    return Math.floor(interval) + " years ago";
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return Math.floor(interval) + " months ago";
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return Math.floor(interval) + " days ago";
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return Math.floor(interval) + " hours ago";
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return Math.floor(interval) + " minutes ago";
+  }
+  return Math.floor(seconds) + " seconds ago";
+}
+
+
+
 
 export default withUrqlClient(createUrqlClient, { ssr: true })(Index);

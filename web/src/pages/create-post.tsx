@@ -46,7 +46,7 @@ const CreatePost: React.FC<{}> = ({}) => {
                 label="Body"
               />
             </Box>
-            <ShadButton className='p-2 mt-4	'>
+            <ShadButton className='p-2 mt-4	 align'>
             <Button
               type="submit"
               isLoading={isSubmitting}

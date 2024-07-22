@@ -4,6 +4,7 @@ import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { isServer } from "../utils/isServer";
+import { Badge } from "../components/ui/badge";
 import {
   Menubar,
   MenubarContent,
@@ -39,7 +40,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   } else {
     body = (
       <Flex alignItems="center" gap={2}>
-        <Box>{data.me.username}</Box>
+        <Badge className="text-base" variant={"secondary"}>{data.me.username}</Badge>
         <ShadButton 
           onClick={() => {logout({}); window.location.reload();}}
           disabled={logoutFetching}
