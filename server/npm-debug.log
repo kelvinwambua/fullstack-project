@@ -1,0 +1,48 @@
+0 info it worked if it ends with ok
+1 verbose cli [
+1 verbose cli   'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Users\\shwif\\fullstack-project\\server\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'typeorm',
+1 verbose cli   'migration:generate',
+1 verbose cli   '--',
+1 verbose cli   '-d',
+1 verbose cli   'typeormconfig.ts',
+1 verbose cli   'src/migrations/AddCascadeDeleteToVote'
+1 verbose cli ]
+2 info using npm@2.15.12
+3 info using node@v20.12.2
+4 verbose run-script [ 'pretypeorm', 'typeorm', 'posttypeorm' ]
+5 info pretypeorm modules@1.0.0
+6 info typeorm modules@1.0.0
+7 verbose unsafe-perm in lifecycle true
+8 info modules@1.0.0 Failed to exec typeorm script
+9 verbose stack Error: modules@1.0.0 typeorm: `typeorm-ts-node-commonjs "migration:generate" "-d" "typeormconfig.ts" "src/migrations/AddCascadeDeleteToVote"`
+9 verbose stack Exit status 1
+9 verbose stack     at EventEmitter.<anonymous> (C:\Users\shwif\fullstack-project\server\node_modules\npm\lib\utils\lifecycle.js:217:16)
+9 verbose stack     at EventEmitter.emit (node:events:518:28)
+9 verbose stack     at ChildProcess.<anonymous> (C:\Users\shwif\fullstack-project\server\node_modules\npm\lib\utils\spawn.js:24:14)
+9 verbose stack     at ChildProcess.emit (node:events:518:28)
+9 verbose stack     at maybeClose (node:internal/child_process:1105:16)
+9 verbose stack     at ChildProcess._handle.onexit (node:internal/child_process:305:5)
+10 verbose pkgid modules@1.0.0
+11 verbose cwd C:\Users\shwif\fullstack-project\server
+12 error Windows_NT 10.0.22631
+13 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\shwif\\fullstack-project\\server\\node_modules\\npm\\bin\\npm-cli.js" "run" "typeorm" "migration:generate" "--" "-d" "typeormconfig.ts" "src/migrations/AddCascadeDeleteToVote"
+14 error node v20.12.2
+15 error npm  v2.15.12
+16 error code ELIFECYCLE
+17 error modules@1.0.0 typeorm: `typeorm-ts-node-commonjs "migration:generate" "-d" "typeormconfig.ts" "src/migrations/AddCascadeDeleteToVote"`
+17 error Exit status 1
+18 error Failed at the modules@1.0.0 typeorm script 'typeorm-ts-node-commonjs "migration:generate" "-d" "typeormconfig.ts" "src/migrations/AddCascadeDeleteToVote"'.
+18 error This is most likely a problem with the modules package,
+18 error not with npm itself.
+18 error Tell the author that this fails on your system:
+18 error     typeorm-ts-node-commonjs "migration:generate" "-d" "typeormconfig.ts" "src/migrations/AddCascadeDeleteToVote"
+18 error You can get information on how to open an issue for this project with:
+18 error     npm bugs modules
+18 error Or if that isn't available, you can get their info via:
+18 error
+18 error     npm owner ls modules
+18 error There is likely additional logging output above.
+19 verbose exit [ 1, true ]

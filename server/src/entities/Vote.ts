@@ -5,6 +5,7 @@ import {
     ManyToOne,
     PrimaryColumn,
     Column,
+    JoinColumn,
   } from "typeorm";
   import { User } from "./User";
   import { Post } from "./Post";
@@ -27,6 +28,7 @@ import {
     postId: number;
   
     @ManyToOne(() => Post, (post) => post.votes)
+    @JoinColumn({ name: "postId" })
     post: Post;
   
     

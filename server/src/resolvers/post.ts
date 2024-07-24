@@ -191,7 +191,25 @@ export class PostResolver {
 
   @Mutation(() => Boolean)
   async deletePost(@Arg("id") id: number): Promise<boolean> {
-    await Post.delete(id);
-    return true;
+    return AppDataSource.transaction(async (transactionalEntityManager) => {
+     
+      await transactionalEntityManager.query(
+        `DELETE FROM vote WHERE "postId" = $1`,
+        [id]
+      );
+      
+
+      const result = await transactionalEntityManager.query(
+        `DELETE FROM post WHERE id = $1`,
+        [id]
+      );
+      
+
+      if (result[1] === 0) {
+        throw new Error("Post not found");
+      }
+      
+      return true;
+    });
   }
 }
