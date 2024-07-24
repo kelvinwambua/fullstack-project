@@ -24,6 +24,9 @@
     },
     "allowSyntheticDefaultImports": true
   },
+  "resolutions": {
+  "@urql/exchange-graphcache": "^7.0.0"
+},
   "include": [
     "next-env.d.ts",
     "**/*.ts",
