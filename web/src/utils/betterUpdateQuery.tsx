@@ -1,5 +1,5 @@
 import { Provider, createClient, fetchExchange, debugExchange } from "urql";
-import { QueryInput, cacheExchange, Cache } from "@urql/exchange-graphcache";
+import { QueryInput, cacheExchange, Cache } from '@urql/exchange-graphcache';
 import { MeDocument, LoginMutation , MeQuery, RegisterMutation } from "../generated/graphql";
 export function betterUpdateQuery<Result, Query>(
     cache: Cache,
